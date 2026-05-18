@@ -1,0 +1,26 @@
+[project]
+name = "project1"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Semyon Shtelman",email = "shtelmaan@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "django (>=6.0.5,<7.0.0)",
+    "pillow (>=12.2.0,<13.0.0)",
+    "psycopg2-binary (>=2.9.12,<3.0.0)",
+    "djangorestframework (>=3.17.1,<4.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.lint.dependencies]
+flake8 = "^7.3.0"
+black = "^26.3.1"
+isort = "^8.0.1"
+
