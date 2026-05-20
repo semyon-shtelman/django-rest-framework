@@ -51,7 +51,6 @@ class Command(BaseCommand):
 
             self.stdout.write(self.style.SUCCESS(f'Создан курс: {course.title}'))
 
-        # Создаем уроки для каждого курса
         lessons_data = {
             'Django для начинающих': [
                 {'title': 'Введение в Django', 'content': 'Установка, создание первого проекта, структура папок.'},
