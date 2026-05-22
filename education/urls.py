@@ -1,13 +1,13 @@
 from django.urls import path, include
 from rest_framework import routers
-from courses.apps import CoursesConfig
+from education.apps import CoursesConfig
 from .views import CourseViewSet
 from . import views
 
 app_name = CoursesConfig.name
 
 router = routers.DefaultRouter()
-router.register(r'courses', CourseViewSet, basename='courses')
+router.register(r'education', CourseViewSet, basename='education')
 
 urlpatterns = [
     path('lesson/create/', views.LessonCreateAPIView.as_view(), name='lesson-create'),
