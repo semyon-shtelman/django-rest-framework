@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from courses.models import Course, Lesson
 
 class User(AbstractUser):
     username = None
@@ -17,3 +18,61 @@ class User(AbstractUser):
     class Meta:
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
+
+
+class Payment(models.Model):
+    PAYMENT_CASH = 'cash'
+    PAYMENT_TRANSFER = 'transfer'
+
+    PAYMENT_CHOICES = [
+        (PAYMENT_CASH, 'наличные'),
+        (PAYMENT_TRANSFER, 'перевод')
+    ]
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='payments',
+        verbose_name='Оплаты',
+    )
+    date = models.DateTimeField(auto_now_add=True)
+    course = models.ForeignKey(
+        Course,
+        on_delete=models.SET_NULL,
+        related_name='payments',
+        verbose_name='курс',
+        null=True,
+        blank=True
+    )
+    lesson = models.ForeignKey(
+        Lesson,
+        on_delete=models.SET_NULL,
+        related_name='payments',
+        verbose_name='урок',
+        null=True,
+        blank=True
+    )
+    amount = models.IntegerField()
+    method = models.CharField(
+        max_length=20,
+        choices=PAYMENT_CHOICES,
+        default=PAYMENT_TRANSFER,
+        verbose_name='Способ оплаты'
+    )
+
+    def __str__(self):
+        return f'{self.user.username} - {self.course if self.course else self.lesson}- {self.amount}'
+
+    def clean(self):
+        if self.course and self.lesson:
+            raise ValueError('Нельзя оплатить одновременно курс и урок')
+        if not self.course and not self.lesson:
+            raise ValueError('Должен быть указан либо курс, либо урок')
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
+
+    class Meta:
+        verbose_name = 'Оплата'
+        verbose_name_plural = 'Оплаты'
