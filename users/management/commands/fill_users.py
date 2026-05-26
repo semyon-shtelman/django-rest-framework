@@ -11,16 +11,13 @@ class Command(BaseCommand):
         self.stdout.write(f'{users_count}')
 
         users_data = [
-            {'email': 'alice@example.com', 'password': 'testpass123'},
-            {'email': 'bob@example.com', 'password': 'testpass123'},
-            {'email': 'charlie@example.com', 'password': 'testpass123'},
-            {'email': 'diana@example.com', 'password': 'testpass123'},
-            {'email': 'eva@example.com', 'password': 'testpass123'},
+            {"email": "moder@example.com", "password": "test123"},
+            {"email": "user@example.com", "password": "test123"},
         ]
 
         created = 0
         for user_data in users_data:
-            user = User.objects.create(
+            user = User.objects.create_user(
                 email=user_data['email'],
                 password=user_data['password']
             )
