@@ -1,13 +1,15 @@
-from rest_framework import viewsets, generics
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from django.shortcuts import get_object_or_404
+from rest_framework import generics, viewsets
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Course, Lesson, Subscription
-from .serializers import CourseSerializer, LessonListSerializer, LessonSerializer
-from education.permissions import IsModer, IsOwner
 from education.paginators import CustomPagination
+from education.permissions import IsModer, IsOwner
+
+from .models import Course, Lesson, Subscription
+from .serializers import (CourseSerializer, LessonListSerializer,
+                          LessonSerializer)
 
 
 class SubscriptionAPIView(APIView):
@@ -16,21 +18,16 @@ class SubscriptionAPIView(APIView):
     def post(self, request, pk):
         user = request.user
         course_item = get_object_or_404(Course, pk=pk)
-        subs_item = Subscription.objects.filter(
-            user=user,
-            course=course_item
-        )
+        subs_item = Subscription.objects.filter(user=user, course=course_item)
 
         if subs_item.exists():
             subs_item.delete()
-            message = 'подписка удалена'
+            message = "подписка удалена"
         else:
-            Subscription.objects.create(
-                user=user,
-                course=course_item
-            )
-            message = 'подписка добавлена'
-        return Response({'message': message})
+            Subscription.objects.create(user=user, course=course_item)
+            message = "подписка добавлена"
+        return Response({"message": message})
+
 
 class CourseViewSet(viewsets.ModelViewSet):
     serializer_class = CourseSerializer
