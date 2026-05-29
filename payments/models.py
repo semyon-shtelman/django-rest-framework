@@ -59,8 +59,7 @@ class Payment(models.Model):
         blank=True,
         null=True
     )
-    payment_url = models.URLField(
-        max_length=400,
+    payment_url = models.TextField(
         blank=True,
         null=True
     )
@@ -70,9 +69,13 @@ class Payment(models.Model):
 
     def clean(self):
         if self.course and self.lesson:
-            raise ValidationError('Нельзя оплатить одновременно курс и урок')
+            raise ValidationError(
+                'Нельзя оплатить одновременно курс и урок'
+            )
         if not self.course and not self.lesson:
-            raise ValidationError('Должен быть указан либо курс, либо урок')
+            raise ValidationError(
+                'Должен быть указан либо курс, либо урок'
+            )
 
     def save(self, *args, **kwargs):
         self.clean()
