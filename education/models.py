@@ -5,7 +5,11 @@ from django.db import models
 class Course(models.Model):
     title = models.CharField(max_length=100, verbose_name="Название")
     description = models.TextField()
-
+    price = models.PositiveIntegerField(
+        default=0,
+        verbose_name='Цена',
+        help_text='Цена в рублях'
+    )
     preview = models.ImageField(
         upload_to="course/previews/", blank=True, null=True, verbose_name="Превью курса"
     )
@@ -33,6 +37,12 @@ class Course(models.Model):
 class Lesson(models.Model):
     title = models.CharField(max_length=100, verbose_name="Название")
     content = models.TextField()
+    price = models.PositiveIntegerField(
+        default=0,
+        verbose_name='Цена',
+        help_text='Цена в рублях'
+    )
+
     preview = models.ImageField(upload_to="lesson/previews/", blank=True, null=True)
 
     course = models.ForeignKey(
