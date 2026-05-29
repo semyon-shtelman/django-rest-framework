@@ -1,5 +1,6 @@
 from django.core.management.base import BaseCommand
-from users.models import Payment, User
+from payments.models import Payment
+from users.models import User
 from education.models import Course, Lesson
 import random
 
