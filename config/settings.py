@@ -47,6 +47,7 @@ INSTALLED_APPS = [
 
     'users',
     'education',
+    'payments'
 ]
 
 REST_FRAMEWORK = {
