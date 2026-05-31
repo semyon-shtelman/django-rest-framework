@@ -43,9 +43,11 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'rest_framework_simplejwt',
+    'drf_yasg',
 
     'users',
     'education',
+    'payments'
 ]
 
 REST_FRAMEWORK = {
@@ -161,3 +163,5 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 
 }
+
+STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
