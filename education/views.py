@@ -11,6 +11,7 @@ from .models import Course, Lesson, Subscription
 from .serializers import (CourseSerializer, LessonListSerializer,
                           LessonSerializer)
 
+from .tasks import send_course_update_email
 
 class SubscriptionAPIView(APIView):
     permission_classes = [IsAuthenticated]
@@ -46,7 +47,29 @@ class CourseViewSet(viewsets.ModelViewSet):
         return [p() for p in self.PERMISSIONS.get(self.action, [IsAuthenticated])]
 
     def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+        serializer.save(
+            owner=self.request.user
+        )
+
+    def perform_update(self, serializer):
+        course = serializer.save()
+
+        subscriptions = Subscription.objects.filter(
+            course=course
+        )
+
+        emails = list(
+            subscriptions.values_list(
+                'user__email',
+                flat=True
+            )
+        )
+
+        if emails:
+            send_course_update_email.delay(
+                course.title,
+                emails
+            )
 
 
 class LessonCreateAPIView(generics.CreateAPIView):

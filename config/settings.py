@@ -13,6 +13,7 @@ import os.path
 from datetime import timedelta
 from pathlib import Path
 from dotenv import load_dotenv
+from celery.schedules import crontab
 
 load_dotenv()
 
@@ -138,7 +139,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 
@@ -170,10 +171,13 @@ SIMPLE_JWT = {
 STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
 
 # -- Настройки для Celery --
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_ENABLE_UTC = False
+
 CELERY_BEAT_SCHEDULE = {
-    'task-name': {
-        'task': 'myapp.tasks.my_task',  # Путь к задаче
-        'schedule': timedelta(minutes=10),  # Расписание выполнения задачи (например, каждые 10 минут)
+    'deactivate-inactive-users': {
+        'task': 'education.tasks.deactivate_inactive_users',  # Путь к задаче
+        'schedule': crontab(hour=0, minute=0),  # Расписание выполнения задачи
     },
 }
 # URL-адрес брокера сообщений
