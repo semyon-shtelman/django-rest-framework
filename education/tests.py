@@ -62,7 +62,9 @@ class LessonTestCase(APITestCase):
     def test_update_lesson(self):
 
         data = {"title": "Updated lesson"}
-        response = self.client.patch(f"/education/lesson/update/{self.lesson.id}/", data=data)
+        response = self.client.patch(
+            f"/education/lesson/update/{self.lesson.id}/", data=data
+        )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
