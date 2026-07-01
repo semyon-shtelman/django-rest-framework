@@ -1,8 +1,10 @@
+import random
+
 from django.core.management.base import BaseCommand
+
+from education.models import Course, Lesson
 from payments.models import Payment
 from users.models import User
-from education.models import Course, Lesson
-import random
 
 
 class Command(BaseCommand):
