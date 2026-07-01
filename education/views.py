@@ -8,8 +8,11 @@ from education.paginators import CustomPagination
 from education.permissions import IsModer, IsOwner
 
 from .models import Course, Lesson, Subscription
-from .serializers import (CourseSerializer, LessonListSerializer,
-                          LessonSerializer)
+from .serializers import (
+    CourseSerializer,
+    LessonListSerializer,
+    LessonSerializer,
+)
 from .tasks import send_course_update_email
 
 

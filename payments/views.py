@@ -7,8 +7,11 @@ from rest_framework.views import APIView
 
 from payments.models import Payment
 from payments.serializers import PaymentCreateSerializer, PaymentSerializer
-from payments.services import (create_stripe_price, create_stripe_product,
-                               create_stripe_session)
+from payments.services import (
+    create_stripe_price,
+    create_stripe_product,
+    create_stripe_session,
+)
 
 
 class PaymentListAPIView(generics.ListAPIView):
