@@ -37,7 +37,9 @@ services:
   web:
     build: .
     command: >
-      bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+      bash -c "python manage.py migrate &&
+               python manage.py collectstatic --noinput &&
+               python manage.py runserver 0.0.0.0:8000"
     container_name: django-app
     ports:
       - "8000:8000"
@@ -57,6 +59,23 @@ services:
         condition: service_healthy
     volumes:
       - .:/app
+      - static_volume:/app/static
+      - media_volume:/app/media
+
+  # nginx server
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - static_volume:/app/static
+      - media_volume:/app/media
+    depends_on:
+      - web
+    restart: always
 
   # Celery Worker
   celery:
@@ -111,3 +130,5 @@ services:
 volumes:
   postgres_data:
   redis_data:
+  static_volume:
+  media_volume:
