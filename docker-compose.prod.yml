@@ -4,7 +4,6 @@ services:
   # PostgreSQL база данных
   db:
     image: postgres:16.0
-    container_name: postgres-db
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
@@ -18,11 +17,12 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    restart: always
+
 
   # Redis (брокер для Celery)
   redis:
     image: redis:7-alpine
-    container_name: redis-broker
     expose:
       - "6379"
     volumes:
@@ -32,17 +32,17 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    restart: always
+
 
   # Django приложение
   web:
-    build: .
-    command: >
-      bash -c "python manage.py migrate &&
-               python manage.py collectstatic --noinput &&
-               python manage.py runserver 0.0.0.0:8000"
-    container_name: django-app
-    ports:
-      - "8000:8000"
+    image: semyon1999/django-rest-framework:latest
+    command: gunicorn config.wsgi:application --bind 0.0.0.0:8000
+    expose:
+      - "8000"
+    env_file:
+      - .env
     environment:
       DB_HOST: db
       DB_NAME: ${DB_NAME}
@@ -52,20 +52,20 @@ services:
       REDIS_PORT: 6379
       CELERY_BROKER_URL: ${CELERY_BROKER_URL}
       CELERY_RESULT_BACKEND: ${CELERY_RESULT_BACKEND}
+      ALLOWED_HOSTS: ${ALLOWED_HOSTS}
     depends_on:
       db:
         condition: service_healthy
       redis:
         condition: service_healthy
+    restart: always
     volumes:
-      - .:/app
       - static_volume:/app/static
       - media_volume:/app/media
 
   # nginx server
   nginx:
     image: nginx:alpine
-    container_name: nginx
     ports:
       - "80:80"
       - "443:443"
@@ -79,10 +79,7 @@ services:
 
   # Celery Worker
   celery:
-    build: .
-    container_name: celery-worker
-    expose:
-      - "8000"
+    image: semyon1999/django-rest-framework:latest
     environment:
       DB_HOST: db
       DB_NAME: ${DB_NAME}
@@ -97,16 +94,13 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-    volumes:
-      - .:/app
     command: celery -A config worker -l info
+    restart: always
+
 
   # Celery Beat (планировщик)
   celery-beat:
-    build: .
-    container_name: celery-beat
-    expose:
-      - "8000"
+    image: semyon1999/django-rest-framework:latest
     environment:
       DB_HOST: db
       DB_NAME: ${DB_NAME}
@@ -123,9 +117,9 @@ services:
         condition: service_healthy
       celery:
         condition: service_started
-    volumes:
-      - .:/app
     command: celery -A config beat -l info
+    restart: always
+
 
 volumes:
   postgres_data:

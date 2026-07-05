@@ -138,10 +138,10 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SERVER_SSH_KEY }}
 
-      - name: Copy docker-compose.yml
+      - name: Copy docker-compose.prod.yml
         run: |
           scp -o StrictHostKeyChecking=no \
-            docker-compose.yml \
+            docker-compose.prod.yml \
             ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:/opt/django-rest-framework/
           
       - name: Copy nginx.conf
@@ -160,7 +160,7 @@ jobs:
           ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << EOF
             cd /opt/django-rest-framework
             docker compose pull
-            docker compose up -d
+            docker compose -f docker-compose.prod.yml up -d
             docker compose exec -T web python manage.py migrate
             docker compose exec -T web python manage.py collectstatic --noinput
           EOF
