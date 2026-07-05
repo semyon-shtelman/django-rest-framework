@@ -138,7 +138,7 @@ jobs:
       - name: Copy docker-compose.yml
         run: |
           scp -o StrictHostKeyChecking=no \
-            docker-compose.yml \
+            ./docker-compose.yml \
             ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:/opt/django-rest-framework/
           
       - name: Copy nginx.conf
