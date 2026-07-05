@@ -50,6 +50,7 @@ services:
       REDIS_PORT: 6379
       CELERY_BROKER_URL: ${CELERY_BROKER_URL}
       CELERY_RESULT_BACKEND: ${CELERY_RESULT_BACKEND}
+      ALLOWED_HOSTS: ${ALLOWED_HOSTS}
     depends_on:
       db:
         condition: service_healthy
